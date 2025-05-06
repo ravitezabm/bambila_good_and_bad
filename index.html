@@ -188,6 +188,37 @@
             max-width: 600px;
         }
         
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            padding: 20px;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 800px;
+            margin: 5% auto;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            border: 3px solid #66ccff;
+        }
+        
         .close-btn {
             color: #ff6666;
             float: right;
@@ -305,6 +336,13 @@
         </div>
     </div>
     
+    <div class="video-modal" id="videoModal">
+        <span class="close-btn" id="closeVideoModal" style="position: absolute; right: 20px; top: 10px; color: white; font-size: 32px;">&times;</span>
+        <div class="video-container">
+            <iframe id="videoFrame" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+    
     <script>
         // Video data
         const videos = [
@@ -313,28 +351,32 @@
                 description: "Learn about your personal space and boundaries with fun cartoon characters!",
                 age: "Ages 3-6",
                 image: "DyklpT-uo_w-HD.jpg",
-                alt: "Cartoon children with protective bubble showing personal space"
+                alt: "Cartoon children with protective bubble showing personal space",
+                youtubeId: "LUGJaoM1CKs"
             },
             {
-                title: "The Touching Rules",
+                title: "Safe and Unsafe Touch",
                 description: "Simple rules about what touches are OK and what touches are not OK.",
                 age: "Ages 4-7",
                 image: "LUGJaoM1CKs-SD.jpg",
-                alt: "Animated scene showing appropriate and inappropriate touching"
+                alt: "Animated scene showing appropriate and inappropriate touching",
+                youtubeId: "DyklpT-uo_w"
             },
             {
                 title: "My Body Safety Song",
                 description: "A catchy song that helps you remember important safety rules!",
                 age: "Ages 3-8",
                 image: "TmxCvx2D2B8-HD.jpg",
-                alt: "Children singing a safety song with animated notes"
+                alt: "Children singing a safety song with animated notes",
+                youtubeId: "TmxCvx2D2B8"
             },
             {
-                title: "Safe Touch, Unsafe Touch",
+                title: "I Can Be Safe",
                 description: "Learn the difference between safe touches and unsafe touches.",
                 age: "Ages 5-8",
                 image: "YFYaig-6HMo-SD.jpg",
-                alt: "Animation showing examples of safe and unsafe situations"
+                alt: "Animation showing examples of safe and unsafe situations",
+                youtubeId: "YFYaig-6HMo"
             },
             
         ];
@@ -359,9 +401,12 @@
             
             videoList.appendChild(videoCard);
             
-            // Add click event for future video functionality
+            // Add click event to play YouTube video
             videoCard.addEventListener('click', () => {
-                alert(`This would play the "${video.title}" video! In a real application, this would launch the video player.`);
+                const videoModal = document.getElementById('videoModal');
+                const videoFrame = document.getElementById('videoFrame');
+                videoFrame.src = `https://www.youtube.com/embed/${video.youtubeId}?autoplay=1`;
+                videoModal.style.display = 'block';
             });
         });
         
@@ -381,6 +426,23 @@
         window.addEventListener('click', (event) => {
             if (event.target === parentModal) {
                 parentModal.style.display = 'none';
+            }
+        });
+        
+        // Video modal functionality
+        const videoModal = document.getElementById('videoModal');
+        const closeVideoBtn = document.getElementById('closeVideoModal');
+        const videoFrame = document.getElementById('videoFrame');
+        
+        closeVideoBtn.addEventListener('click', () => {
+            videoModal.style.display = 'none';
+            videoFrame.src = ''; // Stop video playback
+        });
+        
+        window.addEventListener('click', (event) => {
+            if (event.target === videoModal) {
+                videoModal.style.display = 'none';
+                videoFrame.src = ''; // Stop video playback
             }
         });
         
