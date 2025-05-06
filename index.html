@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Body Safety Videos for Kids</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f9ff;
+            color: #333;
+            padding: 10px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            background-color: #ffcce6;
+            border-radius: 20px;
+            padding: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 3px solid #ff99cc;
+        }
+        
+        h1 {
+            color: #ff66b2;
+            font-size: 24px;
+            text-shadow: 1px 1px 2px white;
+        }
+        
+        .safety-info {
+            background-color: #fffacd;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 2px dashed #ffd700;
+        }
+        
+        .video-list {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            scroll-snap-type: x mandatory;
+        }
+        
+        .video-card {
+            scroll-snap-align: start;
+            flex: 0 0 280px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border: 3px solid #66ccff;
+        }
+        
+        .video-card:hover, .video-card:focus {
+            transform: scale(1.03);
+            border-color: #ff9933;
+        }
+        
+        .video-thumb {
+            width: 100%;
+            height: 150px;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .play-icon {
+            position: absolute;
+            font-size: 50px;
+            color: rgba(255,255,255,0.8);
+            z-index: 2;
+        }
+        
+        .thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        h3 {
+            color: #0099cc;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        p {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .age-tag {
+            display: inline-block;
+            background-color: #99ff99;
+            color: #006600;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px;
+            background-color: #ccf2ff;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        .parent-section {
+            background-color: #e6e6ff;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 2px solid #ccccff;
+        }
+        
+        button {
+            background-color: #ff9966;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            border-radius: 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #ff7733;
+        }
+        
+        @media (orientation: landscape) {
+            .video-list {
+                padding: 15px 5px;
+            }
+            
+            .video-card {
+                flex: 0 0 240px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            border-radius: 15px;
+            max-width: 600px;
+        }
+        
+        .close-btn {
+            color: #ff6666;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .character {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 80px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .character:hover {
+            transform: scale(1.1);
+        }
+        
+        .bubble {
+            display: none;
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 10px;
+            width: 200px;
+            border: 2px solid #66ccff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 30px;
+            border-width: 10px 10px 0;
+            border-style: solid;
+            border-color: white transparent;
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 102, 0.7);
+            border-radius: 50%;
+            width: 5px;
+            height: 5px;
+            animation: twinkle 3s infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            50% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="stars" id="stars"></div>
+        
+        <header>
+            <h1>My Body Safety Videos</h1>
+        </header>
+        
+        <div class="safety-info">
+            <p>These fun videos will help you learn about body safety and what touches are OK and not OK! Remember, your body belongs to you!</p>
+        </div>
+        
+        <div class="video-list" id="videoList">
+            <!-- Video Cards will be added here by JavaScript -->
+        </div>
+        
+        <div class="parent-section">
+            <h3>For Parents & Guardians</h3>
+            <p>These educational videos teach children about personal boundaries and body safety in an age-appropriate way.</p>
+            <button id="parentInfo">More Information</button>
+        </div>
+        
+        <footer>
+            Remember: If something doesn't feel right, tell a trusted adult!
+        </footer>
+        
+        <img src="/api/placeholder/100/100" alt="Helper character" class="character" id="helper">
+        <div class="bubble" id="helpBubble">
+            <p>Hi there! These videos help you learn about staying safe. Your body belongs to you!</p>
+        </div>
+    </div>
+    
+    <div class="modal" id="parentModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>Information for Parents</h2>
+            <p>These educational videos are designed to teach children about personal boundaries, appropriate/inappropriate touch, and body safety in an age-appropriate way.</p>
+            <p>Tips for discussing this topic with your children:</p>
+            <ul>
+                <li>Watch the videos together with your child</li>
+                <li>Use proper names for body parts</li>
+                <li>Emphasize that they can always talk to you</li>
+                <li>Teach them to recognize and trust their feelings</li>
+                <li>Practice "what if" scenarios</li>
+            </ul>
+            <p>If you have concerns about your child's behavior or responses to these videos, consider consulting with a child psychologist or counselor.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Video data
+        const videos = [
+            {
+                title: "My Body Belongs to Me",
+                description: "Learn about your personal space and boundaries with fun cartoon characters!",
+                age: "Ages 3-6",
+                image: "DyklpT-uo_w-HD.jpg",
+                alt: "Cartoon children with protective bubble showing personal space"
+            },
+            {
+                title: "The Touching Rules",
+                description: "Simple rules about what touches are OK and what touches are not OK.",
+                age: "Ages 4-7",
+                image: "LUGJaoM1CKs-SD.jpg",
+                alt: "Animated scene showing appropriate and inappropriate touching"
+            },
+            {
+                title: "My Body Safety Song",
+                description: "A catchy song that helps you remember important safety rules!",
+                age: "Ages 3-8",
+                image: "TmxCvx2D2B8-HD.jpg",
+                alt: "Children singing a safety song with animated notes"
+            },
+            {
+                title: "Safe Touch, Unsafe Touch",
+                description: "Learn the difference between safe touches and unsafe touches.",
+                age: "Ages 5-8",
+                image: "YFYaig-6HMo-SD.jpg",
+                alt: "Animation showing examples of safe and unsafe situations"
+            },
+            
+        ];
+        
+        // Add videos to the page
+        const videoList = document.getElementById('videoList');
+        
+        videos.forEach(video => {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.tabIndex = 0; // Make focusable for accessibility
+            
+            videoCard.innerHTML = `
+                <div class="video-thumb">
+                    <div class="play-icon">▶️</div>
+                    <img src="${video.image}" alt="${video.alt}" class="thumb-img">
+                </div>
+                <h3>${video.title}</h3>
+                <p>${video.description}</p>
+                <span class="age-tag">${video.age}</span>
+            `;
+            
+            videoList.appendChild(videoCard);
+            
+            // Add click event for future video functionality
+            videoCard.addEventListener('click', () => {
+                alert(`This would play the "${video.title}" video! In a real application, this would launch the video player.`);
+            });
+        });
+        
+        // Parent modal functionality
+        const parentModal = document.getElementById('parentModal');
+        const parentInfoBtn = document.getElementById('parentInfo');
+        const closeModalBtn = document.getElementById('closeModal');
+        
+        parentInfoBtn.addEventListener('click', () => {
+            parentModal.style.display = 'block';
+        });
+        
+        closeModalBtn.addEventListener('click', () => {
+            parentModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', (event) => {
+            if (event.target === parentModal) {
+                parentModal.style.display = 'none';
+            }
+        });
+        
+        // Helper character functionality
+        const helper = document.getElementById('helper');
+        const helpBubble = document.getElementById('helpBubble');
+        
+        helper.addEventListener('click', () => {
+            if (helpBubble.style.display === 'block') {
+                helpBubble.style.display = 'none';
+            } else {
+                helpBubble.style.display = 'block';
+                setTimeout(() => {
+                    helpBubble.style.display = 'none';
+                }, 5000);
+            }
+        });
+        
+        // Create twinkling stars background
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 30; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}%`;
+            star.style.top = `${Math.random() * 100}%`;
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>
